@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmTech</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">FARMTECH</div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#equipment">Rentals</a>
+    <a href="#booking" id="loginLink">Login</a>
+    <a href="#" id="logoutBtn" style="display:none;">Logout</a>
+  </nav>
+</header>
+
+<section id="home" class="hero">
+  <h1>Book Your Farming Equipment</h1>
+  <p>Order farming equipment online easily and efficiently.</p>
+  <a href="#booking" class="btn">Login</a>
+</section>
+
+<section id="cart" class="cart-section">
+  <h2>Your Cart</h2>
+  <p id="empty-cart-msg">Your cart is empty. Add equipment to continue.</p>
+  <div id="cart-items"></div>
+  <p id="cart-total">Total: ₹0</p>
+  <button id="book-now" class="btn" disabled>Book Now</button>
+</section>
+
+<section id="my-bookings" class="cart-section" style="display:none;">
+  <h2>My Bookings</h2>
+  <div id="booking-list"></div>
+</section>
+
+<section id="equipment" class="equipment">
+  <h2>Available Equipment</h2>
+  <div class="equipment-list">
+
+    <div class="equipment-item">
+      <img src="tractor.png" />
+      <h3>Tractor</h3>
+      <p>₹15000</p>
+      <button class="add-btn" disabled>Add to Cart</button>
+    </div>
+
+    <div class="equipment-item">
+      <img src="plough.png" />
+      <h3>Plough</h3>
+      <p>₹500</p>
+      <button class="add-btn" disabled>Add to Cart</button>
+    </div>
+
+    <div class="equipment-item">
+      <img src="seeder.png" />
+      <h3>Seeder</h3>
+      <p>₹1200</p>
+      <button class="add-btn" disabled>Add to Cart</button>
+    </div>
+
+    <div class="equipment-item">
+      <img src="cultivator.png" />
+      <h3>Cultivator</h3>
+      <p>₹15000</p>
+      <button class="add-btn" disabled>Add to Cart</button>
+    </div>
+
+  </div>
+</section>
+
+<section id="booking" class="auth-section">
+  <div class="auth-forms">
+
+    <div class="form-box" id="loginBox">
+      <h2>Login</h2>
+      <p id="auth-msg"></p>
+      <form id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Email" required />
+        <input id="loginPassword" type="password" placeholder="Password" required />
+        <button type="submit" class="btn">Log In</button>
+      </form>
+      <p>Don’t have an account? <a href="#" id="toRegister">Register</a></p>
+    </div>
+
+    <div class="form-box" id="registerBox" style="display:none;">
+      <h2>Register</h2>
+      <form id="registerForm">
+        <input id="regUsername" type="text" placeholder="Username" required />
+        <input id="regEmail" type="email" placeholder="Email" required />
+        <input id="regPassword" type="password" placeholder="Password" required />
+        <input id="regConfirm" type="password" placeholder="Confirm Password" required />
+        <button type="submit" class="btn">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" id="toLogin">Log in</a></p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <p>© 2025 FARMTECH. All rights reserved.</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const AUTH_API = "http://localhost:5000/api/auth";
+  const BOOKINGS_API = "http://localhost:5000/api/bookings/my";
+  const CREATE_BOOKING_API = "http://localhost:5000/api/bookings";
+
+  const loginForm = document.getElementById("loginForm");
+  const authMsg = document.getElementById("auth-msg");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginLink = document.getElementById("loginLink");
+  const bookNowBtn = document.getElementById("book-now");
+  const bookingSection = document.getElementById("my-bookings");
+  const bookingList = document.getElementById("booking-list");
+
+  let cart = [];
+
+  const enableCartButtons = () =>
+    document.querySelectorAll(".add-btn").forEach(b => b.disabled = false);
+
+  const disableCartButtons = () =>
+    document.querySelectorAll(".add-btn").forEach(b => b.disabled = true);
+
+  const showMsg = (msg, color="green") => {
+    authMsg.innerText = msg;
+    authMsg.style.color = color;
+  };
+
+  // INITIAL STATE
+  if (localStorage.getItem("token")) {
+    logoutBtn.style.display = "inline";
+    loginLink.style.display = "none";
+    enableCartButtons();
+  } else {
+    disableCartButtons();
+  }
+
+  // 🔐 LOGIN — FIXED & STABLE
+  loginForm.onsubmit = async e => {
+    e.preventDefault();
+
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
+
+    try {
+      const res = await fetch(AUTH_API + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showMsg(data.message || "Login failed", "red");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      showMsg("Welcome " + data.username + " 🌱");
+
+      loginForm.reset();
+      logoutBtn.style.display = "inline";
+      loginLink.style.display = "none";
+      enableCartButtons();
+
+      loadMyBookings();
+
+    } catch (err) {
+      console.error(err);
+      showMsg("Server error", "red");
+    }
+  };
+
+  logoutBtn.onclick = () => {
+    localStorage.clear();
+    location.reload();
+  };
+
+  // CART
+  document.querySelectorAll(".add-btn").forEach(btn => {
+    btn.onclick = () => {
+      const item = btn.parentElement;
+      cart.push({
+        name: item.querySelector("h3").innerText,
+        price: parseInt(item.querySelector("p").innerText.replace("₹",""))
+      });
+      bookNowBtn.disabled = false;
+    };
+  });
+
+  bookNowBtn.onclick = async () => {
+    const token = localStorage.getItem("token");
+    const total = cart.reduce((s,i)=>s+i.price,0);
+
+    const res = await fetch(CREATE_BOOKING_API, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({ items: cart, totalAmount: total })
+    });
+
+    const data = await res.json();
+    showMsg(data.message);
+    cart = [];
+    bookNowBtn.disabled = true;
+    loadMyBookings();
+  };
+
+  async function loadMyBookings() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const res = await fetch(BOOKINGS_API, {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const bookings = await res.json();
+    bookingList.innerHTML = "";
+    bookingSection.style.display = "block";
+
+    bookings.forEach(b => {
+      bookingList.innerHTML += `
+        <div>
+          <strong>${new Date(b.bookedAt).toLocaleString()}</strong>
+          <ul>${b.items.map(i => `<li>${i.name} - ₹${i.price}</li>`).join("")}</ul>
+        </div>
+      `;
+    });
+  }
+
+});
+</script>
+
+</body>
+</html>
