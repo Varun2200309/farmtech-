@@ -11,6 +11,8 @@ router.post("/", authMiddleware, async (req, res) => {
   try {
     const { items, totalAmount } = req.body;
 
+    console.log("BOOKING DATA RECEIVED:", req.body);
+
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "No items to book" });
     }
@@ -20,7 +22,6 @@ router.post("/", authMiddleware, async (req, res) => {
       items,
       totalAmount
     });
-
     await booking.save();
 
     res.status(201).json({

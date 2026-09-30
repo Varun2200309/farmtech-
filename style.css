@@ -1,0 +1,264 @@
+/* Reset
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7f2;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    background: hsl(129, 81%, 8%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 60px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.navbar nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 17px;
+    transition: 0.3s;
+}
+
+.navbar nav a:hover {
+    color: #FFD54F;
+}
+/* Equipment Section */
+.equipment {
+    padding: 60px;
+}
+
+.equipment-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+.equipment-item {
+    width: 280px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.equipment-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+/* Hero Section */
+.hero{
+    height:80vh;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("hero.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+
+    color:white;
+    padding:20px;
+}
+
+.hero h1{
+    font-size:55px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    font-size:22px;
+    margin-bottom:30px;
+    color:#f5f5f5;
+}
+.hero-content{
+    background: rgba(0,0,0,0.45);
+    padding:50px;
+    border-radius:20px;
+    backdrop-filter: blur(6px);
+
+    max-width:800px;
+    width:90%;
+}
+.btn {
+    background: #2E7D32;
+    color: white;
+    text-decoration: none;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #1B5E20;
+}
+/* Login Section */
+.auth-section {
+    padding: 80px 20px;
+    background: #f5f7f2;
+}
+
+.auth-forms {
+    display: flex;
+    justify-content: center;
+}
+
+.form-box {
+    width: 420px;
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    transition: 0.3s ease;
+}
+
+.form-box:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+}
+.form-box h2 {
+    text-align: center;
+    color: #2E7D32;
+    margin-bottom: 25px;
+}
+
+.form-box input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.form-box button {
+    width: 100%;
+}
+
+.form-box p {
+    text-align: center;
+    margin-top: 20px;
+}
+/* Footer */
+.footer{
+    background:#2E7D32;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:80px;
+    font-size:15px;
+}
+.price{
+    font-size:22px;
+    font-weight:bold;
+    color:#2E7D32;
+    margin:10px 0;
+}
+
+.status{
+    display:inline-block;
+    background:#E8F5E9;
+    color:#2E7D32;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:15px;
+}
+.add-btn{
+    width:85%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#2E7D32;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.add-btn:hover:not(:disabled){
+    background:#1B5E20;
+    transform:scale(1.03);
+}
+
+ .add-btn:disabled{
+    background:#bdbdbd;
+    cursor:not-allowed;
+    opacity:0.7;
+}
+.equipment-item{
+    transition:0.3s ease;
+    cursor:pointer;
+}
+
+.equipment-item:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+/* Cart Section */
+.cart-section{
+    width:90%;
+    max-width:650px;
+    margin:60px auto;
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.cart-section h2{
+    color:#2E7D32;
+    margin-bottom:20px;
+}
+
+#empty-cart-msg{
+    color:#666;
+    font-size:18px;
+    margin-bottom:20px;
+}
+
+#cart-total{
+    font-size:24px;
+    font-weight:bold;
+    color:#2E7D32;
+    margin:25px 0;
+}
+
+#book-now{
+    width:220px;
+}
+
+
